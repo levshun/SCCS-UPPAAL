@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+int fo_id;
+int fd_id;
+chan open, close; // open and close file
+
+	</declaration>
+	<template>
+		<name x="5" y="5">Employee</name>
+		<parameter>int p_id, int r_id,  int d_id</parameter>
+		<declaration>// Place local declarations here.
+
+		</declaration>
+		<location id="id0" x="-552" y="-344">
+			<name x="-576" y="-384">work_2</name>
+		</location>
+		<location id="id1" x="-552" y="-496">
+			<name x="-576" y="-480">work_1</name>
+		</location>
+		<location id="id2" x="-920" y="-408"/>
+		<location id="id3" x="-728" y="-320">
+			<name x="-768" y="-304">department_2</name>
+		</location>
+		<location id="id4" x="-736" y="-512">
+			<name x="-784" y="-552">department_1</name>
+		</location>
+		<init ref="id2"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-656" y="-360">close !</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-808" y="-272">(r_id == 1 &amp;&amp; d_id == fd_id) || (r_id == 2 &amp;&amp; p_id == fo_id)</label>
+			<label kind="synchronisation" x="-624" y="-296">open !</label>
+			<nail x="-608" y="-296"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-664" y="-496">close !</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-816" y="-592">(r_id == 1 &amp;&amp; d_id == fd_id) || (r_id == 2 &amp;&amp; p_id == fo_id)</label>
+			<label kind="synchronisation" x="-648" y="-568">open !</label>
+			<nail x="-632" y="-536"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-872" y="-328">d_id == 2</label>
+			<nail x="-840" y="-336"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-880" y="-528">d_id == 1</label>
+			<nail x="-848" y="-496"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-888" y="-440">d_id == 1 &amp;&amp; r_id == 2</label>
+			<label kind="assignment" x="-800" y="-416">d_id = 2</label>
+			<nail x="-744" y="-416"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-712" y="-432">d_id == 2 &amp;&amp; r_id == 2</label>
+			<label kind="assignment" x="-712" y="-416">d_id = 1</label>
+			<nail x="-720" y="-416"/>
+		</transition>
+	</template>
+	<template>
+		<name>File</name>
+		<declaration>// Place local declarations here.
+
+int owner_id = 2;
+int department_id = 1;</declaration>
+		<location id="id5" x="-816" y="-264">
+			<name x="-840" y="-304">signed</name>
+		</location>
+		<location id="id6" x="-608" y="-264">
+			<name x="-632" y="-304">closed</name>
+		</location>
+		<location id="id7" x="-712" y="-264">
+			<name x="-736" y="-304">opened</name>
+		</location>
+		<location id="id8" x="-928" y="-264">
+			<name x="-952" y="-304">created</name>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-784" y="-288">open ?</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-920" y="-248">fo_id = owner_id,
+fd_id = department_id</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-680" y="-288">close ?</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-672" y="-232">open ?</label>
+			<nail x="-656" y="-232"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Boss_1 = Employee(1, 1, 1);
+Worker_11  = Employee(2, 2, 1);
+Worker_12  = Employee(3, 2, 1);
+
+Boss_2 = Employee(4, 1, 2);
+Worker_21  = Employee(5, 2, 2);
+
+// List one or more processes to be composed into a system.
+system  Boss_1, Worker_11, Worker_12, Boss_2, Worker_21, File;</system>
+</nta>
